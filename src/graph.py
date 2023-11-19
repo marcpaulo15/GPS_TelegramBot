@@ -5,6 +5,7 @@ graphs using the osmnx library.
 
 import os
 import pickle
+from typing import Any
 
 import osmnx as ox
 
@@ -95,9 +96,6 @@ class Graph:
             simplify=True  # if True, simplify graph topology
         )
 
-        # TODO: Bearing represents angle in degrees (clockwise)
-        #   graph = ox.bearing.add_edge_bearings(G=graph)
-
         # Simplify the graph: remove unnecessary information (like 'geometry')
         # and remove multi-name streets
         for node1, info1 in graph.nodes.items():
@@ -112,6 +110,42 @@ class Graph:
                         # If street has several names, select the first one
                         edge['name'] = edge['name'][0]
         self.graph = graph
+
+    def __len__(self) -> int:
+        return len(self.graph)
+
+    def __getitem__(self, item: Any) -> Any:
+        """
+        Basically used for accessing list items.
+        Index the 'graph' attribute values.
+
+        :param item: item to get
+        :return: item index of 'graph' attribute
+        """
+        return self.graph[item]
+
+    def __getattr__(self, name: str) -> Any:
+        """
+        If the attribute <name> is not found in the class instance,
+        try to access it from the 'graph' attribute
+
+        Code Example:
+            g = Graph(...)
+            g.nodes  # gets g.graph.nodes because instance has no attr 'nodes'
+
+        :param name: attribute name
+        :raise AttributeError: if 'graph' attribute has no attribute <name>
+        :return: <name> attribute value if 'graph' has <name> attribute
+        """
+
+        # If the attribute is not found in the instance,
+        # try to access it from the 'graph' attribute
+        if hasattr(self.graph, name):
+            return getattr(self.graph, name)
+        else:
+            # If the attribute is not found in both the instance and the graph,
+            # raise an AttributeError
+            raise AttributeError(f"'Graph' object has no attribute '{name}'")
 
     def _save_graph(self) -> None:
         """
