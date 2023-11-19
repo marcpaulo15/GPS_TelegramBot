@@ -1,0 +1,21 @@
+- config:
+    # Configuration of the plot_directions method in Guide class
+
+    # Icons (images) to show the current position (car or walking) and the
+    # destination position.
+    destination_icon_filename: 'destination_icon.png'
+    person_icon_filename: 'person_icon.png'
+    car_icon_filename: 'car_icon.png'
+
+    # Line width and radius of circles
+    line_width: 8
+    source_circle_radius: 20
+    intermediate_circles_radius: 16
+    destination_circle_radius: 20
+
+    # Colors in Hex or RBG format. Example: '#f18d00' or [241, 141, 0]
+    done_route_color: '#F18D00'
+    remaining_route_color: '#4A80F5'
+    intermediate_points_color: '#9BBFF4'
+    source_point_color: '#2B35AF'
+    destination_point_color: '#228B22'
