@@ -42,23 +42,33 @@ class Guide:
         os.path.abspath(__file__).split('/')[:-2]
     ) + '/icons'
 
-    def __init__(self, place: str, walk_or_drive: str = 'drive') -> None:
+    def __init__(self) -> None:
         """
-        Initialize a Guide instance.
+        Initialize a Guide instance. To initialize the graph (Graph instance)
+        of a specific city call the get_graph method.
 
-        :param place: '<city>, <country>' format. Query to get the graph.
-        :param walk_or_drive: network type. 'walk' or 'drive'. For the graph.
         :return: None
         """
 
-        self.graph = Graph(place=place, network_type=walk_or_drive)
-        self.config = self._get_config()
+        self.graph = None  # Call get_graph method to fetch the graph of a city
+        self._icon_filename = None  # Updated when get_graph is called
+        self.config = self._get_config()  # Get the configuration params
 
+    def get_graph(self, place: str, walk_or_drive: str = 'drive') -> None:
+        """
+        Initialize a Graph instance for the given place.
+
+        :param place: '<city>, <country>' format. Query to get the graph.
+        :param walk_or_drive: network type. 'walk' or 'drive'. For the graph.
+        :return: None. Updates the <graph> attribute.
+        """
+
+        self.graph = Graph(place=place, network_type=walk_or_drive)
         # Select icon (person or car) depending on the network type
         if walk_or_drive == 'walk':
-            self.icon_filename = self.config['person_icon_filename']
+            self._icon_filename = self.config['person_icon_filename']
         else:  # walk_or_drive == 'drive'
-            self.icon_filename = self.config['car_icon_filename']
+            self._icon_filename = self.config['car_icon_filename']
 
     @staticmethod
     def _get_config() -> Dict[str, Any]:
@@ -85,7 +95,10 @@ class Guide:
     ) -> List[RouteLeg]:
         """
         Compute the directions for the shortest route between source and
-        destination coordinates.
+        destination coordinates. We call it a 'route', and every route is
+        formed by a sequence of legs. Each leg is a python dictionary with
+        information about how to reach the next checkpoint of the route, and it
+        is linked to the previous and the next legs.
 
         :param src_coords: (latitude, longitude) source coordinates (first)
         :param dst_coords: (latitude, longitude) destination coordinates (last)
@@ -134,7 +147,7 @@ class Guide:
             # The penultimate leg references the last two nodes and the
             # destination point.
             penult_leg = directions[-2]
-            # Compute distances between the penutlimate and last nodes with
+            # Compute distances between the penultimate and last nodes with
             # respect of the destination point
             penult_dist = haversine(penult_leg['src'], penult_leg['dst'])
             last_dist = haversine(penult_leg['mid'], penult_leg['dst'])
@@ -343,7 +356,7 @@ class Guide:
             )
         current_icon = sm.IconMarker(
             coord=current_coords,
-            file_path=self.icons_dir + '/' + self.icon_filename,
+            file_path=self.icons_dir + '/' + self._icon_filename,
             offset_x=10,
             offset_y=20
         )
@@ -375,7 +388,8 @@ if __name__ == '__main__':
     src_coords_ = (41.409560, 2.183529)  # Barcelona, C/ de Mallorca, 549-535
     dst_coords_ = (41.408366, 2.175050)  # Barcelona, C/ de Còrsega, 611-599
 
-    guide_ = Guide(place=place_, walk_or_drive=walk_or_drive_)
+    guide_ = Guide()
+    guide_.get_graph(place=place_, walk_or_drive=walk_or_drive_)
 
     directions_ = guide_.get_directions(
         src_coords=src_coords_, dst_coords=dst_coords_
