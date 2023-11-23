@@ -1,6 +1,8 @@
 """
-Graph Module. This module defines a Graph class for working with street network
-graphs using the osmnx library.
+Graph Module.
+
+This module defines a Graph class for working with street network
+graphs using the osmnx library (OpenStreetMaps).
 """
 
 import os
@@ -12,8 +14,8 @@ import osmnx as ox
 
 class Graph:
     """
-    Graph Class. The Graph class represents a street network graph for a
-    specific location and network type.
+    Graph Class. The Graph class represents a street network graph (OSM) for a
+    specific location and network type ('walk' or 'drive').
 
     Class Attributes:
         - saved_graphs_dir (str): Directory path for saving and loading graphs.
@@ -26,7 +28,7 @@ class Graph:
         - city: name of the city (extracted from the given place)
         - country: name of the country (extracted from the given place)
 
-    Private Methods:
+    Hidden Methods:
         - _download_graph: Download and create a graph for a specific place.
         - _save_graph: Save the graph attribute in a pickle file.
         - _load_graph: Load the graph attribute from a pickle file.
@@ -40,7 +42,7 @@ class Graph:
         """
         Initialize a Graph instance.
 
-        :param place: '<city>, <country>'. Place whose graph is downloaded.
+        :param place: '<city>, <country>'. Place represented by the graph.
         :param network_type: 'walk' or 'drive' for different graph edges.
         :return: None
         """
@@ -66,8 +68,6 @@ class Graph:
                 '_' + network_type + '.pkl'
         )
         self.pkl_filepath = self.saved_graphs_dir + '/' + self.pkl_filename
-        self.city = self.place.split(',')[0].split()
-        self.country = self.place.split(',')[1].split()
 
         self.graph = None
         try:
@@ -81,7 +81,7 @@ class Graph:
     def _download_graph(self) -> None:
         """
         Download and create a graph within the boundaries of the given place.
-        The place (query) must be geocodable and OSM must have polygon
+        The place (query) must be geocodable, and OSM must have polygon
         boundaries for the geocode result (osmnx library).
 
         :raise ValueError: if network_type is neither 'walk' nor 'drive'
@@ -111,17 +111,20 @@ class Graph:
                         edge['name'] = edge['name'][0]
         self.graph = graph
 
-    def __len__(self) -> int:
-        return len(self.graph)
-
     def __getitem__(self, item: Any) -> Any:
         """
         Basically used for accessing list items.
-        Index the 'graph' attribute values.
+        If indexed, access the 'graph' attribute values.
+
+        Code Example:
+            outer = OuterClassWithGraph(...)
+            print(outer[i])
+            # gets outer.graph[i] because outer can't be indexed.
 
         :param item: item to get
-        :return: item index of 'graph' attribute
+        :return: the item of 'graph' attribute
         """
+
         return self.graph[item]
 
     def __getattr__(self, name: str) -> Any:
@@ -130,8 +133,9 @@ class Graph:
         try to access it from the 'graph' attribute
 
         Code Example:
-            g = Graph(...)
-            g.nodes  # gets g.graph.nodes because instance has no attr 'nodes'
+            outer = OuterClassWithGraph(...)
+            print(outer.nodes)
+            # gets outer.graph.nodes because outer has no attr 'nodes'
 
         :param name: attribute name
         :raise AttributeError: if 'graph' attribute has no attribute <name>
