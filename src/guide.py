@@ -50,6 +50,8 @@ class Guide:
         :return: None
         """
 
+        self.city = None
+        self.country = None
         self.graph = None  # Call get_graph method to fetch the graph of a city
         self._icon_filename = None  # Updated when get_graph is called
         self.config = self._get_config()  # Get the configuration params
@@ -63,6 +65,8 @@ class Guide:
         :return: None. Updates the <graph> attribute.
         """
 
+        self.city = place.split(',')[0].strip()
+        self.country = place.split(',')[1].strip()
         self.graph = Graph(place=place, network_type=walk_or_drive)
         # Select icon (person or car) depending on the network type
         if walk_or_drive == 'walk':
@@ -292,7 +296,7 @@ class Guide:
             current_leg: int,
             size: Tuple[int, int] = (400, 400),
             file_name: Optional[str] = None
-    ) -> None:
+    ) -> Optional[str]:
         """
         Plot the directions on a map.
 
@@ -376,7 +380,9 @@ class Guide:
         # Render and save the image
         image = map_.render()
         if file_name is not None:
-            image.save(self.route_images_dir + '/' + file_name)
+            img_filepath = self.route_images_dir + '/' + file_name
+            image.save(img_filepath)
+            return img_filepath
 
 
 if __name__ == '__main__':
@@ -394,11 +400,12 @@ if __name__ == '__main__':
     directions_ = guide_.get_directions(
         src_coords=src_coords_, dst_coords=dst_coords_
     )
+
     for leg_idx_ in range(len(directions_)+1):
         guide_.plot_directions(
             directions=directions_,
             current_leg=leg_idx_,
-            file_name=f'demo_{leg_idx_}.png'
+            file_name=f'Guide_demo_{leg_idx_}.png'
         )
 
     pprint(directions_)
