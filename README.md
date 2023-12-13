@@ -4,9 +4,9 @@ Implementation of a **GPS Telegram Bot** using **Python** [*telegram-api-bot, Op
 # Introduction
 Welcome to this friendly guide to building a **GPS-based Telegram bot**! At its core, this Bot serves as a user-friendly GPS assistant on the Telegram platform. It empowers users to effortlessly navigate from one point to another within their current cities, all while maintaining a warm and conversational interaction. 
 
-However, the true magic lies in its dual purpose: not only does this project assist users on their journeys, but it also serves as a tutorial, guiding aspiring developers in the art of creating their very own GPS bots :)
+This project also serves as a **tutorial**, guiding aspiring developers in the art of creating their very own GPS bots :)
 
-# FOTO ./images/intro.png
+![intro_png](./images/intro.png)
 
 # Project Structure
 
@@ -14,23 +14,37 @@ However, the true magic lies in its dual purpose: not only does this project ass
 - [```config/config.yml```](./config/config.yml): Configuration file to set the plotting parameters: colors, icons, etc.
 - [```icons/```](./icons): Contains the icons (images) displayed in the maps to highlight relevant locations.
 - [```images/```](./images): Contains the images used in this README file.
-- [```LICENSE```](./LICENSE): The project's license information (MIT License).
+- [```LICENSE```](./LICENSE): The project's license information (Apache-2.0 License).
 - [```requirements.txt```](./requirements.txt): Contains the list of Python libraries (and their versions) needed to work on this project.
 - [```token.txt```](./token.txt): Your Bot's token (created by the **BotFather**).
 - [```route_images/```](./route_images): Contains the images that describe each route. These images are sent to the user.
 - [```saved_graphs/```](./saved_graphs): OpenStreetMap graphs that are saved to be loaded when needed (instead of downloaded every time).
 - [```src/```](./src): Contains the Python code. The three main modules are explained below.
 
-# TODO: ./images/project_structure.png
+![project_structure_png](./images/project_structure.png)
 
-## Graph Module
-TODO... 
+## [Graph Module](./src/graph.py)
+This module defines a ```Graph``` class for working with street network graphs using the ```osmnx``` library (**OpenStreetMaps**). It allows to download, save, and load OpenStreet Maps of different cities.
 
-## Guide Module
-TODO...
+## [Guide Module](./src/guide.py)
+This module computes the shortest route between two points in the same city and displays the route on a map. The route is split into **legs** which are represented as a dictionary with the following format: (a **route** is represented as a sequence of **legs**)
+```
+leg_i = {
+   'src': ...  # (lat, long) coordinates of the source point of this leg (checkpoint {i}-th)
+   'mid': ...  # (lat, long) coordinates of the mid point of this leg (checkpoint {i+1}-th)
+   'dst': ...  # (lat, long) coordinates of the destination point of this leg (checkpoint {i+2}-th)
+   'current_name': ...  # street name of segment between src and mid
+   'next_name': ...  # street name of segment between mid and dst
+   'angle':  ...  # angle (in degrees) formed by the intersection of the segments src-mid and mid-dst
+}
+```
+The colors and line widths of the map can be customized through the ```config/config.yml``` file.
+Here is an example of the different **legs** (segments from one checkpoint to the next one) of a route in the city of Barcelona (Spain).
 
-## Bot Module
-TODO...
+![route_png](./images/route.png)
+
+## [Bot Module](./src/main_bot.py)
+This module uses the Telegram API to serve as a GPS Telegram Bot that will guide you wherever you want. This module uses a [Guide](./src/guide.py) instance to compute routes between points. It preprocesses the route to create meaningful messages that will guide users to their final destination. The messages are sent depending on the users' location in real-time.
 
 # How to create a Telegram Bot
 1) Search for the **@Botfather** in your Telegram app
@@ -40,13 +54,13 @@ TODO...
 5) Get bot’s API Token, and save it in a ```token.txt``` file. Then, we will use this token to initialize your bot using Python.
 6) **[OPTIONAL]** Change the profile photo of your Bot.
 
-# TODO: ./images/create_bot.png
+![create_bot_png](./images/create_bot.png)
    
 
 # How to interact with the Bot
 1) Type the ```/start``` command to start the conversation.
 2) Type the ```/help``` command to know what can you do with this Bot.
-3) Share your location with the Bot. If done correctly, you will receive a confirmation message.
+3) **Share your location** with the Bot. If done correctly, you will receive a confirmation message.
 4) Type the ```/where``` command to know where you are: city, street name, etc.
    - If you call the ```where``` command without sharing your location, the Bot will ask you to share your location first.
 5) Type the ```/go``` command, followed by the destination you want to reach (like ```/go <street_name>, <num>```).
@@ -115,11 +129,16 @@ For **interacting with the Telegram API in Python**, the python-telegram-bot lib
 ### [PyYAML](https://pyyaml.org/wiki/PyYAMLDocumentation)
 *"Yet Another Markup Language"* (**YAML**) is a human-readable data serialization format. **It's often used for configuration files**, data exchange between languages with different data structures, and in various applications where data needs to be stored, transmitted, or configured in a human-readable format. YAML's design aims to be simple and easy for both humans to read and write and for machines to parse and generate.
 
+# Privacy
+This Bot does not store the personal information of the user and does not track the location of the user. 
+
+Every piece of information collected while the Bot is running is intended to be used just to make the bot work properly, not to leave the local environment and be used for other purposes outside the scope of this project.
+
 # Contribute
 Contributions to this project are welcome! If you'd like to improve the game, fix bugs, or add new features, feel free to fork the repository and submit a pull request.
 
 
 # License
-This project is licensed under the MIT License. See the [LICENSE file](./LICENSE) for details.
+This project is licensed under the Apache-2.0 License. See the [LICENSE file](./LICENSE) for details.
 
 # Hope you enjoyed it! Thanks! :)
