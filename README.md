@@ -1,22 +1,63 @@
 # GPS Telegram Bot
-Implementation of a Telegram Bot to get you from A to B
-TODO...
+Implementation of a **GPS Telegram Bot** using **Python** [*telegram-api-bot, OpenStreetMap, NetworkX*]
 
 # Introduction
-TODO...
+Welcome to this friendly guide to building a **GPS-based Telegram bot**! At its core, this Bot serves as a user-friendly GPS assistant on the Telegram platform. It empowers users to effortlessly navigate from one point to another within their current cities, all while maintaining a warm and conversational interaction. 
+
+However, the true magic lies in its dual purpose: not only does this project assist users on their journeys, but it also serves as a tutorial, guiding aspiring developers in the art of creating their very own GPS bots :)
+
+# FOTO ./images/intro.png
 
 # Project Structure
-TODO...
+
+- [```README.md```](README.md): This file, providing an overview of the project.
+- [```config/config.yml```](./config/config.yml): Configuration file to set the plotting parameters: colors, icons, etc.
+- [```icons/```](./icons): Contains the icons (images) displayed in the maps to highlight relevant locations.
+- [```images/```](./images): Contains the images used in this README file.
+- [```LICENSE```](./LICENSE): The project's license information (MIT License).
+- [```requirements.txt```](./requirements.txt): Contains the list of Python libraries (and their versions) needed to work on this project.
+- [```token.txt```](./token.txt): Your Bot's token (created by the **BotFather**).
+- [```route_images/```](./route_images): Contains the images that describe each route. These images are sent to the user.
+- [```saved_graphs/```](./saved_graphs): OpenStreetMap graphs that are saved to be loaded when needed (instead of downloaded every time).
+- [```src/```](./src): Contains the Python code. The three main modules are explained below.
+
+# TODO: ./images/project_structure.png
+
+## Graph Module
+TODO... 
+
 ## Guide Module
 TODO...
+
 ## Bot Module
 TODO...
 
 # How to create a Telegram Bot
-TODO...
+1) Search for the **@Botfather** in your Telegram app
+2) Start a conversation (```/start```) and type the command ```/newbot```
+3) Enter the new bot’s name (e.g. ```GuideMateBot```)
+4) Enter bot’s username (must end with ```_bot```) (e.g. ```guide_mate_bot```)
+5) Get bot’s API Token, and save it in a ```token.txt``` file. Then, we will use this token to initialize your bot using Python.
+6) **[OPTIONAL]** Change the profile photo of your Bot.
+
+# TODO: ./images/create_bot.png
+   
 
 # How to interact with the Bot
-TODO...
+1) Type the ```/start``` command to start the conversation.
+2) Type the ```/help``` command to know what can you do with this Bot.
+3) Share your location with the Bot. If done correctly, you will receive a confirmation message.
+4) Type the ```/where``` command to know where you are: city, street name, etc.
+   - If you call the ```where``` command without sharing your location, the Bot will ask you to share your location first.
+5) Type the ```/go``` command, followed by the destination you want to reach (like ```/go <street_name>, <num>```).
+   - You don't have to specify the city since the Bot already knows it from the location you are sharing.
+   - If you call the ```/go``` command without any destination (empty destination), the Bot will ask you to enter a destination.
+   - If you call the ```/go``` command without sharing your location, the Bot will ask you to share your location first.
+   - If you call the ```/go``` command with an unreachable destination, the Bot will ask you to try another one.
+
+6) Type the ```/cancel``` command to cancel your ongoing route.
+   - If you don't have any ongoing route, the Bot will let you know it.
+7) If the Bot detects that you are moving away from the route, the Bot will send you a warning message.
 
 # Getting started 
 First, please make sure you have [Python](https://www.python.org/downloads/) installed.
